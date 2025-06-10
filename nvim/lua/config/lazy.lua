@@ -39,8 +39,19 @@ require("lazy").setup({
 -- LSPConfig below, as show in the "ts_ls" example
 require("mason").setup()
 require("mason-lspconfig").setup()
---vim.lsp.enable('ts_ls')
---vim.lsp.enable('svelte')
+
+-- UFO Config
+--
+vim.o.foldcolumn = '0' -- '0' is not bad
+vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+vim.o.foldlevelstart = 99
+vim.o.foldenable = true
+
+-- Using ufo provider need remap `zR` and `zM`. If Neovim is 0.6.1, remap yourself
+vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
+vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
+-- 
+-- UFO Config
 
 -- Tag Auto-Close Setup
 require('nvim-ts-autotag').setup()
@@ -56,16 +67,43 @@ vim.opt.relativenumber = true
 vim.opt.number = true
 
 -- Change colorscheme
+require("catppuccin").setup({
+	integrations = {
+		blink_cmp = true,
+		treesitter = true,
+	}
+})
 vim.cmd.colorscheme "catppuccin"
 
 -- Setup Lualine (bottom status bar)
 require('lualine').setup()
+
+-- Setup Format on Save
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = vim.api.nvim_create_augroup("lsp", { clear = true }),
+  callback = function(args)
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      buffer = args.buf,
+      callback = function()
+        vim.lsp.buf.format {async = false, id = args.data.client_id }
+      end,
+    })
+  end
+})
 
 -- Make neovim background transparent
 vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'FloatBorder', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'Pmenu', { bg = 'none' })
+vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
+vim.api.nvim_set_hl(0, 'NvimTreeNormal', { bg = 'none' })
+-- Additional Transparency
+vim.diagnostic.config({
+  float = {
+    border = "rounded", -- or "single", "double", "shadow", etc.
+  },
+})
 
 -- Telescope Keybinds
 local builtin = require('telescope.builtin')
