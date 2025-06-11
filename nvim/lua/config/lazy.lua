@@ -34,6 +34,42 @@ require("lazy").setup({
   checker = { enabled = false },
 })
 
+-- Blink.cmp Setup
+require("blink.cmp").setup({
+	keymap = { preset = 'super-tab' },
+	sources = {
+		default = { "lsp", "path", "snippets", "buffer" },
+		providers = {}
+	},
+	completion = {
+		keyword = { range = "full" },
+		trigger = {
+			show_on_blocked_trigger_characters = { " ", "\n", "\t", "$", ":" },
+		},
+		ghost_text = { enabled = true },
+		documentation = {
+		  auto_show = true,
+		  auto_show_delay_ms = 500,
+		  window = {
+		    border = "rounded",
+		    winblend = 0,
+		  },
+		},
+		menu = {
+		  draw = { treesitter = { "lsp" } },
+		  border = "rounded",
+		  winblend = 0,
+		},
+	      },
+	      signature = {
+		enabled = true,
+		window = {
+		  border = "rounded",
+		  winblend = 0,
+		},
+	}
+})
+
 -- LSP & Autocomplete Setup
 -- When adding a new language server, first add it via Mason the enable it via
 -- LSPConfig below, as show in the "ts_ls" example
