@@ -162,10 +162,34 @@ vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
 vim.api.nvim_set_hl(0, "Pmenu", { bg = "none" })
 vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
 vim.api.nvim_set_hl(0, "NvimTreeNormal", { bg = "none" })
+vim.api.nvim_set_hl(0, "TreesitterContextLineNumber", { fg = "#9399B2", bg = "none" })
+vim.api.nvim_set_hl(0, "LineNr", { fg = "#9399B2", bg = "none" })
 -- Additional Transparency
 vim.diagnostic.config({
 	float = {
 		border = "rounded", -- or "single", "double", "shadow", etc.
+	},
+})
+
+-- Telescope Setup
+require("telescope").setup({
+	extensions = {
+		aerial = {
+			-- Set the width of the first two columns (the second
+			-- is relevant only when show_columns is set to 'both')
+			col1_width = 4,
+			col2_width = 30,
+			-- How to format the symbols
+			format_symbol = function(symbol_path, filetype)
+				if filetype == "json" or filetype == "yaml" then
+					return table.concat(symbol_path, ".")
+				else
+					return symbol_path[#symbol_path]
+				end
+			end,
+			-- Available modes: symbols, lines, both
+			show_columns = "both",
+		},
 	},
 })
 
