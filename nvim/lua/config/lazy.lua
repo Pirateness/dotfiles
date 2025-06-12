@@ -193,6 +193,9 @@ require("telescope").setup({
 	},
 })
 
+-- Animations Setup
+require("mini.animate").setup()
+
 -- Telescope Keybinds
 local builtin = require("telescope.builtin")
 vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Telescope find files" })
@@ -209,3 +212,6 @@ end, { desc = "Show line diagnostics" })
 
 -- Go to Definition LSP Override
 vim.keymap.set("n", "gd", require("telescope.builtin").lsp_definitions, { desc = "Telescope: go to definition" })
+
+-- Make Cursor Stay Centered
+vim.o.scrolloff = 999
