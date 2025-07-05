@@ -1,4 +1,3 @@
--- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
 	local lazyrepo = "https://github.com/folke/lazy.nvim.git"
@@ -38,7 +37,7 @@ require("lazy").setup({
 require("blink.cmp").setup({
 	keymap = { preset = "super-tab" },
 	sources = {
-		default = { "lsp", "path", "snippets", "buffer" },
+		default = { "lsp", "path", "buffer" },
 		providers = {},
 	},
 	completion = {
@@ -46,7 +45,7 @@ require("blink.cmp").setup({
 		trigger = {
 			show_on_blocked_trigger_characters = { " ", "\n", "\t", "$", ":" },
 		},
-		ghost_text = { enabled = true },
+		--ghost_text = { enabled = true },
 		documentation = {
 			auto_show = true,
 			auto_show_delay_ms = 500,
@@ -72,12 +71,48 @@ require("blink.cmp").setup({
 
 -- LSP & Autocomplete Setup
 require("mason").setup()
-require("mason-lspconfig").setup()
+require("mason-lspconfig").setup({
+	-- Always add language servers below so they are consistently installed across platforms, as adding them via
+	-- Mason does not store them in the config in any way.
+	-- NOTE: Anything other than language servers (e.g. Prettierd) will not be auto-installed
+	ensure_installed = {
+		"lua_ls",
+		"ts_ls",
+		"denols",
+		"svelte",
+		"jsonls",
+		"html",
+		"cssls",
+		"clangd",
+		"rust_analyzer",
+		"harper_ls",
+	},
+	automatic_enable = {
+		exclude = { "denols", "ts_ls" },
+	},
+})
 
--- UFO Config
---
-vim.o.foldcolumn = "0" -- '0' is not bad
-vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+-- We manually setup the Deno and ts_ls language servers as they will conflict with each other with the default
+-- mason-lspconfig settings. To do this we exclude them from being automatically enabled above and then set them
+-- up via lspconfig
+local nvim_lsp = require("lspconfig")
+
+nvim_lsp.denols.setup({
+	on_attach = on_attach,
+	root_dir = nvim_lsp.util.root_pattern("deno.json", "deno.jsonc"),
+})
+
+nvim_lsp.ts_ls.setup({
+	on_attach = on_attach,
+	root_dir = nvim_lsp.util.root_pattern("package.json"),
+	single_file_support = false,
+})
+
+vim.g.markdown_fenced_languages = {
+	"ts=typescript",
+}
+-- End of LSP Setup
+
 vim.o.foldlevelstart = 99
 vim.o.foldenable = true
 
@@ -97,9 +132,6 @@ require("nvim-autopairs").setup()
 require("treesitter-context").setup({
 	enable = true,
 })
-
--- Hardtime Setup
---require("hardtime").setup()
 
 -- Snippet Provider
 -- require("luasnip.loaders.from_vscode").lazy_load()
@@ -171,6 +203,13 @@ vim.diagnostic.config({
 	},
 })
 
+-- Add border to LSP hover
+vim.keymap.set("n", "K", function()
+	vim.lsp.buf.hover({
+		border = "rounded",
+	})
+end)
+
 -- Telescope Setup
 require("telescope").setup({
 	extensions = {
@@ -193,6 +232,9 @@ require("telescope").setup({
 	},
 })
 
+-- Telescope File Browser Setup
+require("telescope").setup()
+
 -- Animations Setup
 require("mini.animate").setup()
 
@@ -202,6 +244,7 @@ vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Telescope find f
 vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Telescope live grep" })
 vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Telescope buffers" })
 vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Telescope help tags" })
+vim.keymap.set("n", "<leader>fb", ":Telescope file_browser path=%:p:h select_buffer=true<CR>")
 
 -- GENERAL KEYBINDS --
 
