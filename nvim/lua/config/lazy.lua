@@ -5,7 +5,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 	if vim.v.shell_error ~= 0 then
 		vim.api.nvim_echo({
 			{ "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-			{ out, "WarningMsg" },
+			{ out,                            "WarningMsg" },
 			{ "\nPress any key to exit..." },
 		}, true, {})
 		vim.fn.getchar()
@@ -85,7 +85,7 @@ require("mason-lspconfig").setup({
 		"cssls",
 		"clangd",
 		"rust_analyzer",
-		"harper_ls",
+		"pyright",
 	},
 	automatic_enable = {
 		exclude = { "denols", "ts_ls" },
@@ -113,6 +113,14 @@ vim.g.markdown_fenced_languages = {
 }
 -- End of LSP Setup
 
+-- Diagnostics Setup
+vim.keymap.set(
+	"",
+	"<Leader>l",
+	require("lsp_lines").toggle,
+	{ desc = "Toggle lsp_lines" }
+)
+
 vim.o.foldlevelstart = 99
 vim.o.foldenable = true
 
@@ -136,14 +144,17 @@ require("treesitter-context").setup({
 -- Snippet Provider
 -- require("luasnip.loaders.from_vscode").lazy_load()
 
+-- Setup Gitsigns
+require('gitsigns').setup()
+
 -- Setup Relative Line Numbers
 vim.opt.relativenumber = true
 vim.opt.number = true
 
 -- Setup Theme Manager
 require("themery").setup({
-	themes = { "catppuccin", "kanagawa", "nightfox", "oxocarbon", "gruvbox" }, -- Your list of installed colorschemes.
-	livePreview = true, -- Apply theme while picking. Default to true.
+	themes = { "catppuccin", "kanagawa", "nightfox", "oxocarbon", "burzum", "bathory", "dark-funeral", "darkthrone", "emperor", "gorgoroth", "immortal" }, -- Your list of installed colorschemes.
+	livePreview = true,                                                                                                                                 -- Apply theme while picking. Default to true.
 })
 
 -- Setup Aerial
@@ -162,6 +173,7 @@ require("aerial").setup({
 vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>")
 
 -- Change colorscheme
+--[[
 require("catppuccin").setup({
 	integrations = {
 		blink_cmp = true,
@@ -169,6 +181,7 @@ require("catppuccin").setup({
 	},
 })
 vim.cmd.colorscheme("catppuccin")
+]]
 
 -- Setup Lualine (bottom status bar)
 require("lualine").setup()
