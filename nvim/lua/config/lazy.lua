@@ -92,6 +92,10 @@ require("mason-lspconfig").setup({
 	},
 })
 
+-- mdsvex (Markdown in Svelte) does not have LSP support currently - in the meantime we simply associate .svx files as .md files
+-- (or alternatively .svelte files - but I've chosen to go with .md for the moment)
+vim.filetype.add({ extension = { svx = "markdown" } })
+
 -- We manually setup the Deno and ts_ls language servers as they will conflict with each other with the default
 -- mason-lspconfig settings. To do this we exclude them from being automatically enabled above and then set them
 -- up via lspconfig
