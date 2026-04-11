@@ -35,6 +35,8 @@ require("lazy").setup({
 
 -- Blink.cmp Setup
 require("blink.cmp").setup({
+	-- Disable Blink on Markdown and GLSL files (Blink.cmp currently has an unresolved bug affecting glsl files)
+	enabled = function() return not vim.tbl_contains({ "glsl", "markdown" }, vim.bo.filetype) end,
 	keymap = { preset = "super-tab" },
 	sources = {
 		default = { "lsp", "path", "buffer" },
@@ -86,6 +88,7 @@ require("mason-lspconfig").setup({
 		"clangd",
 		"rust_analyzer",
 		"pyright",
+		"glsl_analyzer"
 	},
 	automatic_enable = {
 		exclude = { "denols", "ts_ls" },
@@ -99,18 +102,14 @@ vim.filetype.add({ extension = { svx = "markdown" } })
 -- We manually setup the Deno and ts_ls language servers as they will conflict with each other with the default
 -- mason-lspconfig settings. To do this we exclude them from being automatically enabled above and then set them
 -- up via lspconfig
-local nvim_lsp = require("lspconfig")
-
-nvim_lsp.denols.setup({
-	on_attach = on_attach,
-	root_dir = nvim_lsp.util.root_pattern("deno.json", "deno.jsonc"),
+vim.lsp.config("denols", {
+	root_markers = { "deno.json", "deno.jsonc" },
 })
-
-nvim_lsp.ts_ls.setup({
-	on_attach = on_attach,
-	root_dir = nvim_lsp.util.root_pattern("package.json"),
-	single_file_support = false,
+vim.lsp.config("ts_ls", {
+	root_markers = { "package.json" },
+	single_file_support = false
 })
+vim.lsp.enable({ "denols", "ts_ls" })
 
 vim.g.markdown_fenced_languages = {
 	"ts=typescript",
@@ -134,6 +133,9 @@ vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
 --
 -- UFO Config
 
+-- auto-session setup
+vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+
 -- Tag Auto-Close Setup
 require("nvim-ts-autotag").setup()
 
@@ -144,9 +146,6 @@ require("nvim-autopairs").setup()
 require("treesitter-context").setup({
 	enable = true,
 })
-
--- Snippet Provider
--- require("luasnip.loaders.from_vscode").lazy_load()
 
 -- Setup Gitsigns
 require('gitsigns').setup()
@@ -176,17 +175,6 @@ require("aerial").setup({
 })
 vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>")
 
--- Change colorscheme
---[[
-require("catppuccin").setup({
-	integrations = {
-		blink_cmp = true,
-		treesitter = true,
-	},
-})
-vim.cmd.colorscheme("catppuccin")
-]]
-
 -- Setup Lualine (bottom status bar)
 require("lualine").setup()
 
@@ -197,6 +185,12 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 		require("conform").format({ bufnr = args.buf })
 	end,
 })
+
+-- Setup nvim-notify (Progress Notifcations)
+require("notify").setup({
+	background_colour = "#000000"
+})
+vim.notify = require("notify")
 
 -- Customise Tab Sizing
 local tabSize = 4
@@ -249,19 +243,20 @@ require("telescope").setup({
 	},
 })
 
--- Telescope File Browser Setup
-require("telescope").setup()
-
--- Animations Setup
-require("mini.animate").setup()
-
 -- Telescope Keybinds
 local builtin = require("telescope.builtin")
 vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Telescope find files" })
 vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Telescope live grep" })
-vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Telescope buffers" })
+vim.keymap.set("n", "<leader>fo", builtin.buffers, { desc = "Telescope buffers" })
 vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Telescope help tags" })
+vim.keymap.set("n", "<leader>fn", ":Telescope notify<CR>")
 vim.keymap.set("n", "<leader>fb", ":Telescope file_browser path=%:p:h select_buffer=true<CR>")
+
+-- Setup todo-comments (Note: I only use this for highlighting the todo comments, for searching I prefer just grepping the comments in Telescope)
+require("todo-comments").setup()
+
+-- Animations Setup
+require("mini.animate").setup()
 
 -- GENERAL KEYBINDS --
 
