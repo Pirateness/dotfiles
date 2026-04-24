@@ -1,0 +1,19 @@
+\begin{titlepage}
+    \vspace*{\fill}
+    \begin{center}
+        \LARGE{\textbf{\thetitle}} \\[0.1in]
+        \normalsize{\thedate} \\[0.2in]
+        \normalsize\textit{\theauthor} \\[0.2in]
+    \end{center}
+    \vspace*{\fill}
+    \thispagestyle{empty}
+\end{titlepage}
+
+\setlist{itemsep=0pt}
+
+\let\mytitle\thetitle
+\pagestyle{fancy}
+\fancyhf{}
+% \fancyhead[L]{\mytitle} % Uncomment to enable title on left-side of header
+\fancyhead[R]{\nouppercase{\leftmark}}
+\fancyfoot[C]{\thepage}

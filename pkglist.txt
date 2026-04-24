@@ -1,0 +1,5 @@
+git
+nvim-git
+tree-sitter
+tree-sitter-cli
+emacs
