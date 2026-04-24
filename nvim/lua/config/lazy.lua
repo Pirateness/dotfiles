@@ -5,7 +5,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 	if vim.v.shell_error ~= 0 then
 		vim.api.nvim_echo({
 			{ "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-			{ out,                            "WarningMsg" },
+			{ out, "WarningMsg" },
 			{ "\nPress any key to exit..." },
 		}, true, {})
 		vim.fn.getchar()
@@ -36,7 +36,9 @@ require("lazy").setup({
 -- Blink.cmp Setup
 require("blink.cmp").setup({
 	-- Disable Blink on Markdown and GLSL files (Blink.cmp currently has an unresolved bug affecting glsl files)
-	enabled = function() return not vim.tbl_contains({ "glsl", "markdown" }, vim.bo.filetype) end,
+	enabled = function()
+		return not vim.tbl_contains({ "glsl", "markdown" }, vim.bo.filetype)
+	end,
 	keymap = { preset = "super-tab" },
 	sources = {
 		default = { "lsp", "path", "buffer" },
@@ -88,7 +90,9 @@ require("mason-lspconfig").setup({
 		"clangd",
 		"rust_analyzer",
 		"pyright",
-		"glsl_analyzer"
+		"glsl_analyzer",
+		"qmlls",
+		"stylua",
 	},
 	automatic_enable = {
 		exclude = { "denols", "ts_ls" },
@@ -107,7 +111,7 @@ vim.lsp.config("denols", {
 })
 vim.lsp.config("ts_ls", {
 	root_markers = { "package.json" },
-	single_file_support = false
+	single_file_support = false,
 })
 vim.lsp.enable({ "denols", "ts_ls" })
 
@@ -116,13 +120,11 @@ vim.g.markdown_fenced_languages = {
 }
 -- End of LSP Setup
 
+-- Refactoring Setup
+require("refactoring").setup()
+
 -- Diagnostics Setup
-vim.keymap.set(
-	"",
-	"<Leader>l",
-	require("lsp_lines").toggle,
-	{ desc = "Toggle lsp_lines" }
-)
+vim.keymap.set("", "<Leader>l", require("lsp_lines").toggle, { desc = "Toggle lsp_lines" })
 
 vim.o.foldlevelstart = 99
 vim.o.foldenable = true
@@ -148,7 +150,7 @@ require("treesitter-context").setup({
 })
 
 -- Setup Gitsigns
-require('gitsigns').setup()
+require("gitsigns").setup()
 
 -- Setup Relative Line Numbers
 vim.opt.relativenumber = true
@@ -156,8 +158,20 @@ vim.opt.number = true
 
 -- Setup Theme Manager
 require("themery").setup({
-	themes = { "catppuccin", "kanagawa", "nightfox", "oxocarbon", "burzum", "bathory", "dark-funeral", "darkthrone", "emperor", "gorgoroth", "immortal" }, -- Your list of installed colorschemes.
-	livePreview = true,                                                                                                                                 -- Apply theme while picking. Default to true.
+	themes = {
+		"catppuccin",
+		"kanagawa",
+		"nightfox",
+		"oxocarbon",
+		"burzum",
+		"bathory",
+		"dark-funeral",
+		"darkthrone",
+		"emperor",
+		"gorgoroth",
+		"immortal",
+	}, -- Your list of installed colorschemes.
+	livePreview = true, -- Apply theme while picking. Default to true.
 })
 
 -- Setup Aerial
@@ -176,7 +190,15 @@ require("aerial").setup({
 vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>")
 
 -- Setup Lualine (bottom status bar)
-require("lualine").setup()
+vim.g.gitblame_display_virtual_text = 0 -- Disable virtual text
+local git_blame = require("gitblame")
+require("lualine").setup({
+	sections = {
+		lualine_c = {
+			{ git_blame.get_current_blame_text, cond = git_blame.is_blame_text_available },
+		},
+	},
+})
 
 -- Setup Format on Save
 vim.api.nvim_create_autocmd("BufWritePre", {
@@ -188,7 +210,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 
 -- Setup nvim-notify (Progress Notifcations)
 require("notify").setup({
-	background_colour = "#000000"
+	background_colour = "#000000",
 })
 vim.notify = require("notify")
 

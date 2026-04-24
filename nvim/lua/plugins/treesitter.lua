@@ -1,16 +1,32 @@
 return {
 	"nvim-treesitter/nvim-treesitter",
-	build = function()
-		require("nvim-treesitter.install").update({ with_sync = true })()
-	end,
+	branch = "main",
+	lazy = false,
+	build = ":TSUpdate",
 	dependencies = {
 		"windwp/nvim-ts-autotag",
 	},
 	config = function()
-		require("nvim-treesitter.configs").setup({
-			highlight = {
-				enable = true,
-			},
-		})
+		require("nvim-treesitter")
+			.install({
+				"lua",
+				"typescript",
+				"javascript",
+				"svelte",
+				"html",
+				"css",
+				"json",
+				"c",
+				"cpp",
+				"rust",
+				"python",
+				"glsl",
+				"markdown",
+				"markdown_inline",
+				"bash",
+				"regex",
+				"qmljs",
+			})
+			:wait(300000)
 	end,
 }
