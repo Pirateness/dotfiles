@@ -1,5 +1,6 @@
 git
-nvim-git
+neovim-git
 tree-sitter
 tree-sitter-cli
+ripgrep
 emacs
