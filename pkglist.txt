@@ -1,3 +1,7 @@
+fish
+kitty
+kitty-terminfo
+tmux
 git
 neovim-git
 tree-sitter
