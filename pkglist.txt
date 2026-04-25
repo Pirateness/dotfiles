@@ -9,3 +9,9 @@ tree-sitter-cli
 ripgrep
 emacs
 yazi
+unixodbc
+texlive-binextra
+texlive-latexrecommended
+texlive-latexextra
+texlive-mathscience
+texlive-plaingeneric

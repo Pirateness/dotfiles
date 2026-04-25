@@ -4,7 +4,7 @@ return {
 	priority = 1000,
 	config = function()
 		require("black-metal").setup({
-			-- optional configuration here
+			theme = "immortal",
 		})
 		require("black-metal").load()
 	end,
