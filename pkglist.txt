@@ -15,3 +15,4 @@ texlive-latexrecommended
 texlive-latexextra
 texlive-mathscience
 texlive-plaingeneric
+hunspell-en_au

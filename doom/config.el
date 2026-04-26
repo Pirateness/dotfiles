@@ -95,9 +95,15 @@
 (use-package modus-themes
   :ensure t
   :demand t
-  :init
   :config
-  (modus-themes-load-theme 'modus-operandi))
+  (modus-themes-load-theme 'modus-operandi)
+  (defun my/toggle-theme ()
+    "Toggle between modus-operandi and modus-vivendi."
+    (interactive)
+    (if (eq (car custom-enabled-themes) 'modus-operandi)
+        (modus-themes-load-theme 'modus-vivendi-tinted)
+      (modus-themes-load-theme 'modus-operandi)))
+  (global-set-key (kbd "<f5>") #'my/toggle-theme))
 
 ;; Set font
 (setq doom-font (font-spec :family "BerkeleyMono Nerd Font" :size 18.0))
