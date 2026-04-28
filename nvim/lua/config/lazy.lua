@@ -118,6 +118,15 @@ vim.lsp.enable({ "denols", "ts_ls" })
 vim.g.markdown_fenced_languages = {
 	"ts=typescript",
 }
+
+-- Enable Treesitter Highlighting
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "*",
+	callback = function()
+		pcall(vim.treesitter.start)
+	end,
+})
+
 -- End of LSP Setup
 
 -- Refactoring Setup
