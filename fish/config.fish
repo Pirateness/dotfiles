@@ -15,3 +15,5 @@ function y
 end
 
 set -gx EDITOR nvim
+
+pokeget random --hide-name
