@@ -95,7 +95,7 @@ require("mason-lspconfig").setup({
 		"stylua",
 	},
 	automatic_enable = {
-		exclude = { "denols", "ts_ls" },
+		exclude = { "denols", "ts_ls", "rust_analyzer" },
 	},
 })
 
