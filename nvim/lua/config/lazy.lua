@@ -20,6 +20,22 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
+-- Setup persistent undo
+vim.opt.undofile = true
+
+-- Make Cursor Stay Centered
+vim.o.scrolloff = 999
+
+-- Setup Relative Line Numbers
+vim.opt.relativenumber = true
+vim.opt.number = true
+
+-- Customise Tab Sizing
+local tabSize = 4
+vim.opt.shiftwidth = tabSize
+vim.opt.tabstop = tabSize
+vim.opt.softtabstop = tabSize
+
 -- Setup lazy.nvim
 require("lazy").setup({
 	spec = {
@@ -161,10 +177,6 @@ require("treesitter-context").setup({
 -- Setup Gitsigns
 require("gitsigns").setup()
 
--- Setup Relative Line Numbers
-vim.opt.relativenumber = true
-vim.opt.number = true
-
 -- Setup Theme Manager
 require("themery").setup({
 	themes = {
@@ -222,12 +234,6 @@ require("notify").setup({
 	background_colour = "#000000",
 })
 vim.notify = require("notify")
-
--- Customise Tab Sizing
-local tabSize = 4
-vim.opt.shiftwidth = tabSize
-vim.opt.tabstop = tabSize
-vim.opt.softtabstop = tabSize
 
 -- Make neovim background transparent
 vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
@@ -299,5 +305,11 @@ end, { desc = "Show line diagnostics" })
 -- Go to Definition LSP Override
 vim.keymap.set("n", "gd", require("telescope.builtin").lsp_definitions, { desc = "Telescope: go to definition" })
 
--- Make Cursor Stay Centered
-vim.o.scrolloff = 999
+-- Show undotree
+vim.keymap.set("n", "<leader><F5>", function()
+	vim.cmd.UndotreeToggle()
+	vim.cmd.UndotreeFocus()
+end)
+
+-- Setup Undotree Split Width
+vim.g.undotree_SplitWidth = math.floor(vim.o.columns * 0.2)
