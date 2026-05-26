@@ -105,7 +105,7 @@ require("mason-lspconfig").setup({
 		"cssls",
 		"clangd",
 		"rust_analyzer",
-		"pyright",
+		"basedpyright",
 		"glsl_analyzer",
 		"qmlls",
 		"stylua",

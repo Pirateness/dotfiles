@@ -8,6 +8,7 @@ tree-sitter
 tree-sitter-cli
 ripgrep
 emacs
+uv
 yazi
 unixodbc
 texlive-binextra
