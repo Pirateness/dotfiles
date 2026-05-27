@@ -1,0 +1,12 @@
+[open]
+prepend_rules = [
+	{ url = "*.csv", use = "tabiew" },
+	{ url = "*.tsv", use = "tabiew" },
+	{ url = "*.json", use = "tabiew" },
+	{ url = "*.jsonl", use = "tabiew" },
+]
+
+[opener]
+tabiew = [
+	{ run = "tw --truncate-ragged-lines %s", block = true, for = "unix" },
+]

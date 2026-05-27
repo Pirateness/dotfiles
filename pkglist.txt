@@ -3,6 +3,10 @@ kitty
 kitty-terminfo
 tmux
 git
+docker
+docker-compose
+tabiew
+mpv
 neovim-git
 tree-sitter
 tree-sitter-cli
