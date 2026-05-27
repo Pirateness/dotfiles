@@ -2,11 +2,14 @@
 prepend_rules = [
 	{ url = "*.csv", use = "tabiew" },
 	{ url = "*.tsv", use = "tabiew" },
-	{ url = "*.json", use = "tabiew" },
-	{ url = "*.jsonl", use = "tabiew" },
+	{ url = "*.db", use = "lazysql" },
+	{ url = "*.sqlite", use = "lazysql" },
 ]
 
 [opener]
+lazysql = [
+	{ run = "lazysql %s", block = true, for = "unix" },
+]
 tabiew = [
 	{ run = "tw --truncate-ragged-lines %s", block = true, for = "unix" },
 ]
