@@ -14,6 +14,19 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- Neovim by default queries the background of the terminal, and can cause bugs when the background of the terminal
+-- doesn't match the colorscheme of the current theme. When I'm sharing code I often switch between light/dark theme,
+-- so we use to keep the background as "dark" permanently (this doesn't affect switching to light-mode, it just
+-- resolves the bug)
+vim.api.nvim_create_autocmd("OptionSet", {
+	pattern = "background",
+	callback = function()
+		if vim.v.option_new ~= "dark" then
+			vim.opt.background = "dark"
+		end
+	end,
+})
+
 -- Make sure to setup `mapleader` and `maplocalleader` before
 -- loading lazy.nvim so that mappings are correct.
 -- This is also a good place to setup other settings (vim.opt)
@@ -109,6 +122,8 @@ require("mason-lspconfig").setup({
 		"glsl_analyzer",
 		"qmlls",
 		"stylua",
+		"gopls",
+		"buf_ls",
 	},
 	automatic_enable = {
 		exclude = { "denols", "ts_ls", "rust_analyzer" },
@@ -130,6 +145,12 @@ vim.lsp.config("ts_ls", {
 	single_file_support = false,
 })
 vim.lsp.enable({ "denols", "ts_ls" })
+
+vim.lsp.config("buf-lsp", {
+	cmd = { "buf", "lsp", "serve" },
+	filetypes = { "proto" },
+	root_markers = { "buf.yaml", ".git" },
+})
 
 vim.g.markdown_fenced_languages = {
 	"ts=typescript",
@@ -184,6 +205,10 @@ require("themery").setup({
 		"kanagawa",
 		"nightfox",
 		"oxocarbon",
+		"jb",
+		"dayfox",
+		"carbonfox",
+		"duskfox",
 		"burzum",
 		"bathory",
 		"dark-funeral",
@@ -211,12 +236,27 @@ require("aerial").setup({
 vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>")
 
 -- Setup Lualine (bottom status bar)
+vim.opt.cmdheight = 0
 vim.g.gitblame_display_virtual_text = 0 -- Disable virtual text
 local git_blame = require("gitblame")
 require("lualine").setup({
 	sections = {
 		lualine_c = {
-			{ git_blame.get_current_blame_text, cond = git_blame.is_blame_text_available },
+			{ "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
+			{
+				"filename",
+				path = function()
+					local file = vim.fn.expand("%:p")
+					if vim.fn.filereadable(file) == 1 then
+						return 1
+					else
+						return 1
+					end
+				end,
+				symbols = { modified = "  ", readonly = "", unnamed = "" },
+			},
+			-- This is broken atm, removing until fixed
+			-- { git_blame.get_current_blame_text, cond = git_blame.is_blame_text_available },
 		},
 	},
 })
@@ -236,14 +276,26 @@ require("notify").setup({
 vim.notify = require("notify")
 
 -- Make neovim background transparent
-vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
-vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
-vim.api.nvim_set_hl(0, "Pmenu", { bg = "none" })
-vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
-vim.api.nvim_set_hl(0, "NvimTreeNormal", { bg = "none" })
-vim.api.nvim_set_hl(0, "TreesitterContextLineNumber", { fg = "#9399B2", bg = "none" })
-vim.api.nvim_set_hl(0, "LineNr", { fg = "#9399B2", bg = "none" })
+local function set_transparent_highlights()
+	vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+	vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
+	vim.api.nvim_set_hl(0, "Pmenu", { bg = "none" })
+	vim.api.nvim_set_hl(0, "NvimTreeNormal", { bg = "none" })
+end
+
+set_transparent_highlights()
+
+-- Reapply any time the colorscheme changes
+vim.api.nvim_create_autocmd("ColorScheme", {
+	group = vim.api.nvim_create_augroup("TransparentFloats", { clear = true }),
+	callback = set_transparent_highlights,
+})
+
+-- I can't remember what exactly these are for, but I'm sure at some point I'll need them again so leaving them in temporarily
+-- vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
+-- vim.api.nvim_set_hl(0, "TreesitterContextLineNumber", { fg = "#9399B2", bg = "none" })
+-- vim.api.nvim_set_hl(0, "LineNr", { fg = "#9399B2", bg = "none" })
+
 -- Additional Transparency
 vim.diagnostic.config({
 	float = {
@@ -255,11 +307,21 @@ vim.diagnostic.config({
 vim.keymap.set("n", "K", function()
 	vim.lsp.buf.hover({
 		border = "rounded",
+		max_width = 80,
 	})
 end)
 
 -- Telescope Setup
 require("telescope").setup({
+	defaults = {
+		file_ignore_patterns = {
+			"%.pb%.go$", -- Ignores Go Protobuf generated files
+			"%.pb%.cc$", -- Ignores C++ Protobuf generated files
+			"%.pb%.h$", -- Ignores C++ Protobuf headers
+			"_pb2%.py$", -- Ignores Python Protobuf generated files
+			"%.pb%.ts$", -- Ignores TypeScript Protobuf generated files
+		},
+	},
 	extensions = {
 		aerial = {
 			-- Set the width of the first two columns (the second
@@ -287,7 +349,7 @@ vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Telescope live gr
 vim.keymap.set("n", "<leader>fo", builtin.buffers, { desc = "Telescope buffers" })
 vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Telescope help tags" })
 vim.keymap.set("n", "<leader>fn", ":Telescope notify<CR>")
-vim.keymap.set("n", "<leader>fb", ":Telescope file_browser path=%:p:h select_buffer=true<CR>")
+-- vim.keymap.set("n", "<leader>fb", ":Telescope file_browser path=%:p:h select_buffer=true<CR>")
 
 -- Setup todo-comments (Note: I only use this for highlighting the todo comments, for searching I prefer just grepping the comments in Telescope)
 require("todo-comments").setup()
@@ -299,7 +361,7 @@ require("mini.animate").setup()
 
 -- Show diagnostics for the current line
 vim.keymap.set("n", "<leader>d", function()
-	vim.diagnostic.open_float(nil, { focusable = false, scope = "line" })
+	vim.diagnostic.open_float(nil, { focusable = false, scope = "line", max_width = 80 })
 end, { desc = "Show line diagnostics" })
 
 -- Go to Definition LSP Override
@@ -310,6 +372,11 @@ vim.keymap.set("n", "<leader><F5>", function()
 	vim.cmd.UndotreeToggle()
 	vim.cmd.UndotreeFocus()
 end)
+
+-- BLAME!!!
+vim.keymap.set("n", "<leader>gb", "<cmd>Gitsigns blame<CR>", {
+	desc = "Git blame",
+})
 
 -- Setup Undotree Split Width
 vim.g.undotree_SplitWidth = math.floor(vim.o.columns * 0.2)

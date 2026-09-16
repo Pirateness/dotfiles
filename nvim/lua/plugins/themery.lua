@@ -5,5 +5,6 @@ return {
 	"nyoom-engineering/oxocarbon.nvim",
 	"morhetz/gruvbox",
 	"Mofiqul/dracula.nvim",
+	"EdenEast/nightfox.nvim",
 	lazy = false,
 }

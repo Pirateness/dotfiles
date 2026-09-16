@@ -26,6 +26,7 @@ return {
 				"bash",
 				"regex",
 				"qmljs",
+				"go",
 			})
 			:wait(300000)
 	end,
