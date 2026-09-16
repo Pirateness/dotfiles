@@ -2,7 +2,7 @@ if status is-interactive
 	# Commands to run in interactive sessions can go here
     set fish_greeting
 
-	alias ls 'eza --icons'
+	alias ls 'eza --icons auto'
 end
 
 function y
