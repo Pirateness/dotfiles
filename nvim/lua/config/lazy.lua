@@ -209,6 +209,7 @@ require("themery").setup({
 		"dayfox",
 		"carbonfox",
 		"duskfox",
+		"kanso",
 		"burzum",
 		"bathory",
 		"dark-funeral",
@@ -218,6 +219,12 @@ require("themery").setup({
 		"immortal",
 	}, -- Your list of installed colorschemes.
 	livePreview = true, -- Apply theme while picking. Default to true.
+})
+
+require('kanso').setup({
+	background = {
+		dark = "zen",
+	}
 })
 
 -- Setup Aerial
@@ -262,12 +269,12 @@ require("lualine").setup({
 })
 
 -- Setup Format on Save
-vim.api.nvim_create_autocmd("BufWritePre", {
-	pattern = "*",
-	callback = function(args)
-		require("conform").format({ bufnr = args.buf })
-	end,
-})
+-- vim.api.nvim_create_autocmd("BufWritePre", {
+-- 	pattern = "*",
+-- 	callback = function(args)
+-- 		require("conform").format({ bufnr = args.buf })
+-- 	end,
+-- })
 
 -- Setup nvim-notify (Progress Notifcations)
 require("notify").setup({
@@ -361,7 +368,7 @@ require("mini.animate").setup()
 
 -- Show diagnostics for the current line
 vim.keymap.set("n", "<leader>d", function()
-	vim.diagnostic.open_float(nil, { focusable = false, scope = "line", max_width = 80 })
+	vim.diagnostic.open_float(nil, { focusable = true, scope = "line", max_width = 80 })
 end, { desc = "Show line diagnostics" })
 
 -- Go to Definition LSP Override

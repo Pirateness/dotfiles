@@ -6,5 +6,6 @@ return {
 	"morhetz/gruvbox",
 	"Mofiqul/dracula.nvim",
 	"EdenEast/nightfox.nvim",
+	"webhooked/kanso.nvim",
 	lazy = false,
 }
