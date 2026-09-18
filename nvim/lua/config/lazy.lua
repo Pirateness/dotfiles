@@ -62,6 +62,10 @@ require("lazy").setup({
 	checker = { enabled = false },
 })
 
+require("diffview").setup({
+	watch_index = true,
+})
+
 -- Blink.cmp Setup
 require("blink.cmp").setup({
 	-- Disable Blink on Markdown and GLSL files (Blink.cmp currently has an unresolved bug affecting glsl files)
@@ -172,6 +176,8 @@ require("refactoring").setup()
 -- Diagnostics Setup
 vim.keymap.set("", "<Leader>l", require("lsp_lines").toggle, { desc = "Toggle lsp_lines" })
 
+vim.opt.fillchars:append({ diff = "╱" })
+
 vim.o.foldlevelstart = 99
 vim.o.foldenable = true
 
@@ -221,10 +227,10 @@ require("themery").setup({
 	livePreview = true, -- Apply theme while picking. Default to true.
 })
 
-require('kanso').setup({
+require("kanso").setup({
 	background = {
 		dark = "zen",
-	}
+	},
 })
 
 -- Setup Aerial
@@ -288,6 +294,9 @@ local function set_transparent_highlights()
 	vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
 	vim.api.nvim_set_hl(0, "Pmenu", { bg = "none" })
 	vim.api.nvim_set_hl(0, "NvimTreeNormal", { bg = "none" })
+	vim.api.nvim_set_hl(0, "@markup.raw", { bg = "none" })
+	vim.api.nvim_set_hl(0, "@markup.raw.block", { bg = "none" })
+	vim.api.nvim_set_hl(0, "@markup.raw.block.markdown", { bg = "none" })
 end
 
 set_transparent_highlights()
@@ -322,6 +331,7 @@ end)
 require("telescope").setup({
 	defaults = {
 		file_ignore_patterns = {
+			"^vendor/", -- Ignore vendor directory
 			"%.pb%.go$", -- Ignores Go Protobuf generated files
 			"%.pb%.cc$", -- Ignores C++ Protobuf generated files
 			"%.pb%.h$", -- Ignores C++ Protobuf headers
