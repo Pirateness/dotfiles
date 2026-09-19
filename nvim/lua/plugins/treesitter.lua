@@ -27,6 +27,7 @@ return {
 				"regex",
 				"qmljs",
 				"go",
+				"java",
 			})
 			:wait(300000)
 	end,

@@ -128,6 +128,7 @@ require("mason-lspconfig").setup({
 		"stylua",
 		"gopls",
 		"buf_ls",
+		"jdtls",
 	},
 	automatic_enable = {
 		exclude = { "denols", "ts_ls", "rust_analyzer" },
@@ -372,7 +373,7 @@ vim.keymap.set("n", "<leader>fn", ":Telescope notify<CR>")
 require("todo-comments").setup()
 
 -- Animations Setup
-require("mini.animate").setup()
+require("neoscroll").setup()
 
 -- GENERAL KEYBINDS --
 
