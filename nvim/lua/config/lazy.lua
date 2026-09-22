@@ -66,6 +66,16 @@ require("diffview").setup({
 	watch_index = true,
 })
 
+-- Enable word-wrapping and line breaks for Markdown files
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "markdown",
+	callback = function()
+		vim.wo.wrap = true
+		vim.wo.linebreak = true
+		vim.wo.breakindent = true
+	end,
+})
+
 -- Blink.cmp Setup
 require("blink.cmp").setup({
 	-- Disable Blink on Markdown and GLSL files (Blink.cmp currently has an unresolved bug affecting glsl files)
@@ -333,6 +343,7 @@ require("telescope").setup({
 	defaults = {
 		file_ignore_patterns = {
 			"^vendor/", -- Ignore vendor directory
+			"^target/", -- Ignore target directory
 			"%.pb%.go$", -- Ignores Go Protobuf generated files
 			"%.pb%.cc$", -- Ignores C++ Protobuf generated files
 			"%.pb%.h$", -- Ignores C++ Protobuf headers

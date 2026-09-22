@@ -80,6 +80,22 @@ return {
 		dap.listeners.after.disconnect.dapui_config = function()
 			dapui.close()
 		end
+		local signs = {
+			DapBreakpoint = "",
+			DapBreakpointCondition = "",
+			DapBreakpointRejected = "",
+			DapLogPoint = "",
+			DapStopped = "",
+		}
+
+		for name, text in pairs(signs) do
+			vim.fn.sign_define(name, {
+				text = text,
+				texthl = name,
+				numhl = "",
+				linehl = "",
+			})
+		end
 	end,
 	cmd = {
 		"DapContinue",

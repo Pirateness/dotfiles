@@ -3,9 +3,7 @@ return {
 	vim.keymap.set("v", "<leader>gh", ":DiffviewFileHistory<CR>", {
 		desc = "Git file history for selection",
 	}),
-	vim.keymap.set("n", "<leader>dv", ":DiffviewOpen<CR>", {
-		desc = "Git file history for selection",
-	}),
+	vim.keymap.set("n", "<leader>dv", ":DiffviewOpen<CR>", {}),
 	vim.keymap.set("n", "q", function()
 		if require("diffview.lib").get_current_view() then
 			vim.cmd("DiffviewClose")
