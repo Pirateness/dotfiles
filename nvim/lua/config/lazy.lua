@@ -318,14 +318,12 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 	callback = set_transparent_highlights,
 })
 
--- Additional Transparency
+-- Add border to hovers
 vim.diagnostic.config({
 	float = {
-		border = "rounded", -- or "single", "double", "shadow", etc.
+		border = "rounded",
 	},
 })
-
--- Add border to LSP hover
 vim.keymap.set("n", "K", function()
 	vim.lsp.buf.hover({
 		border = "rounded",
