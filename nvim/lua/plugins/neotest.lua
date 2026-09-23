@@ -6,10 +6,19 @@ return {
 				"<leader>t",
 				function()
 					local neotest = require("neotest")
-					neotest.run.run(vim.fn.expand("%"))
+					neotest.run.run()
 					neotest.summary.open()
 				end,
 				desc = "Run nearest test",
+			},
+			{
+				"<leader>ta",
+				function()
+					local neotest = require("neotest")
+					neotest.run.run(vim.fn.expand("%"))
+					neotest.summary.open()
+				end,
+				desc = "Run all tests in file",
 			},
 			{
 				"q",

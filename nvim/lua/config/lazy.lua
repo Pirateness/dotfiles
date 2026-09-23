@@ -318,11 +318,6 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 	callback = set_transparent_highlights,
 })
 
--- I can't remember what exactly these are for, but I'm sure at some point I'll need them again so leaving them in temporarily
--- vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
--- vim.api.nvim_set_hl(0, "TreesitterContextLineNumber", { fg = "#9399B2", bg = "none" })
--- vim.api.nvim_set_hl(0, "LineNr", { fg = "#9399B2", bg = "none" })
-
 -- Additional Transparency
 vim.diagnostic.config({
 	float = {
@@ -377,8 +372,13 @@ vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Telescope find f
 vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Telescope live grep" })
 vim.keymap.set("n", "<leader>fo", builtin.buffers, { desc = "Telescope buffers" })
 vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Telescope help tags" })
+vim.keymap.set("n", "<leader>fs", builtin.lsp_dynamic_workspace_symbols, { desc = "Telescope find symbols" })
 vim.keymap.set("n", "<leader>fn", ":Telescope notify<CR>")
--- vim.keymap.set("n", "<leader>fb", ":Telescope file_browser path=%:p:h select_buffer=true<CR>")
+vim.keymap.set("n", "<leader>ci", builtin.lsp_incoming_calls, { desc = "Telescope: Incoming calls" })
+vim.keymap.set("n", "<leader>co", builtin.lsp_outgoing_calls, { desc = "Telescope: Outgoing calls" })
+vim.keymap.set("n", "gd", builtin.lsp_definitions, { desc = "Telescope: go to definition" })
+vim.keymap.set("n", "gr", builtin.lsp_references, { desc = "Telescope: go to references" })
+vim.keymap.set("n", "gi", builtin.lsp_implementations, { desc = "Telescope: go to implementation(s)" })
 
 -- Setup todo-comments (Note: I only use this for highlighting the todo comments, for searching I prefer just grepping the comments in Telescope)
 require("todo-comments").setup()
@@ -393,19 +393,16 @@ vim.keymap.set("n", "<leader>d", function()
 	vim.diagnostic.open_float(nil, { focusable = true, scope = "line", max_width = 80 })
 end, { desc = "Show line diagnostics" })
 
--- Go to Definition LSP Override
-vim.keymap.set("n", "gd", require("telescope.builtin").lsp_definitions, { desc = "Telescope: go to definition" })
-
 -- Show undotree
 vim.keymap.set("n", "<leader><F5>", function()
 	vim.cmd.UndotreeToggle()
 	vim.cmd.UndotreeFocus()
 end)
 
+-- Setup Undotree Split Width
+vim.g.undotree_SplitWidth = math.floor(vim.o.columns * 0.2)
+
 -- BLAME!!!
 vim.keymap.set("n", "<leader>gb", "<cmd>Gitsigns blame<CR>", {
 	desc = "Git blame",
 })
-
--- Setup Undotree Split Width
-vim.g.undotree_SplitWidth = math.floor(vim.o.columns * 0.2)
